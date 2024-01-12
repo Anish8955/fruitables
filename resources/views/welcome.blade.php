@@ -1,0 +1,11 @@
+@extends('main.layouts.index')
+@section('content')
+    @include('main.pages.frontpage')
+    @include('main.pages.featuresection')
+    @include('main.pages.fruitshop')
+    @include('main.pages.feature')
+    @include('main.pages.vegitables')
+    @include('main.pages.baneer')
+    @include('main.pages.bestsaller')
+    @include('main.pages.fact')
+@stop
