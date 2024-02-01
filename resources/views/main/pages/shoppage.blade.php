@@ -61,6 +61,8 @@
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{$product->id}}">
                                                     <input type="hidden" name="price" value="{{$product->price}}">
+                                                    <input type="hidden" name="name" value="{{$product->name}}">
+                                                    <input type="hidden" name="photo" value="{{$product->photo}}">
                                                     <button type="submit"
                                                         class="btn border border-secondary rounded-pill px-3 text-primary">
                                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart

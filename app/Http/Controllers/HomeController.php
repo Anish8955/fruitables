@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
@@ -12,9 +13,9 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    public function index( ) 
+    public function index() 
     {
-       $products = Product::all();
+       $products = Product::with('cartItems')->get();
         return view('welcome',compact('products'));
     }
 
@@ -30,11 +31,26 @@ class HomeController extends Controller
         $userId = Auth::user()->id;
         $cartItems = CartItem::with('product')->where('user_id',$userId)->get();
         return view('cartpage',compact('cartItems'));
+        
     }
 
     public function contactview( ) 
     {
         return view('contact');
+    }
+
+    public function checkoutview( ) 
+    {
+        $userId = Auth::user()->id;
+        $cartItems = CartItem::with('product')->where('user_id',$userId)->get();
+        return view('checkoutPage',compact('cartItems'));
+    }
+
+    public function orderview()
+    {
+        $userId = auth()->user()->id;
+        $orders = Order::with('orderedProducts')->where('user_id', $userId)->get();
+        return view('orderPage', compact('orders'));
     }
     
 

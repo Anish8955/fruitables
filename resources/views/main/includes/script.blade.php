@@ -24,46 +24,9 @@
         @endif
     });
 </script>
+@stack('scripts')
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        // Increase and decrease quantity
-        $(".btn-minus, .btn-plus").on("click", function () {
-            var productId = $(this).data("product-id");
-            var quantityInput = $(".quantity-input[data-product-id='" + productId + "']");
-            var currentQuantity = parseInt(quantityInput.val());
-
-            if ($(this).hasClass("btn-minus") && currentQuantity > 1) {
-                quantityInput.val(currentQuantity - 1);
-            } else if ($(this).hasClass("btn-plus")) {
-                quantityInput.val(currentQuantity + 1);
-            }
-
-            updateQuantity(productId, quantityInput.val());
-        });
-
-        // Function to update quantity in the database
-        function updateQuantity(productId, newQuantity) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('update.cart.quantity') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    product_id: productId,
-                    quantity: newQuantity
-                },
-                success: function (response) {
-                    // Handle success if needed
-                },
-                error: function (error) {
-                    // Handle error if needed
-                }
-            });
-        }
-    });
-</script>
 
 
 

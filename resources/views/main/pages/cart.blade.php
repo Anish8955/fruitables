@@ -1,3 +1,4 @@
+<style>.sub-total{}</style>
 <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Cart</h1>
@@ -27,7 +28,9 @@
                 </thead>
                 <tbody>
                     @foreach($cartItems as $cartItem)
-
+                    @php
+                    $cartTotal = $cartItem->rate;
+                    @endphp
                     <tr>
                         <th scope="row">
                             <div class="d-flex align-items-center">
@@ -45,24 +48,28 @@
                             <div class="input-group quantity mt-4" style="width: 100px;">
                                 <div class="input-group-btn">
                                     <button class="btn btn-sm btn-minus rounded-circle bg-light border"
-                                        data-product-id="{{ $cartItem->product->id }}">
+                                        data-product-id="{{ $cartItem->id }}"
+                                        data-product-price="{{ $cartItem->rate }}">
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
                                 <input type="text"
                                     class="form-control form-control-sm text-center border-0 quantity-input"
-                                    data-product-id="{{ $cartItem->product->id }}" value="{{ $cartItem->quantity }}">
+                                    data-product-id="{{ $cartItem->id }}" value="{{ $cartItem->quantity }}">
                                 <div class="input-group-btn">
                                     <button class="btn btn-sm btn-plus rounded-circle bg-light border"
-                                        data-product-id="{{ $cartItem->product->id }}">
+                                        data-product-id="{{ $cartItem->id }}"
+                                        data-product-price="{{ $cartItem->rate }}">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
                         </td>
 
+
                         <td>
-                            <p class="mb-0 mt-4">2.99 $</p>
+                            <p class="mb-0 mt-4 sub-total" id="total-price-{{$cartItem->id}}">{{ $cartItem->quantity *
+                                $cartItem->rate }}</p>
                         </td>
                         <td>
                             <form action="{{ route('deleteitem', ['id' => $cartItem->id]) }}" method="POST">
@@ -79,38 +86,101 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-5">
-            <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
-            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
-        </div>
         <div class="row g-4 justify-content-end">
             <div class="col-8"></div>
             <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
                 <div class="bg-light rounded">
-                    <div class="p-4">
-                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
-                        <div class="d-flex justify-content-between mb-4">
-                            <h5 class="mb-0 me-4">Subtotal:</h5>
-                            <p class="mb-0">$96.00</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h5 class="mb-0 me-4">Shipping</h5>
-                            <div class="">
-                                <p class="mb-0">Flat rate: $3.00</p>
-                            </div>
-                        </div>
-                        <p class="mb-0 text-end">Shipping to Ukraine.</p>
-                    </div>
                     <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-                        <h5 class="mb-0 ps-4 me-4">Total</h5>
-                        <p class="mb-0 pe-4">$99.00</p>
+                        <h5 class="mb-0 ps-4 me-4">Cart Total</h5>
+                        <p class="mb-0 pe-4" id="mainTotal">00.00</p>
                     </div>
-                    <button href=""
-                        class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
-                        type="button">Proceed Checkout</button>
-                </div>
+                    <a href="{{ route('checkout')}}"class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Proceed Checkout</a>
+                    </div>
             </div>
         </div>
     </div>
 </div>
 <!-- Cart Page End -->
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const updateCartItem = (productId, newQuantity) => {
+            // You can use AJAX to send the updated quantity to your Laravel controller
+            // Example using fetch API:
+            fetch(`/updateCartItem/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}', // Add CSRF token if not already present
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // You can handle the response as needed
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+
+        document.querySelectorAll('.btn-minus').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const productId = this.getAttribute('data-product-id');
+                const productPrice = parseInt(this.getAttribute('data-product-price'), 10);
+                const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                let newQuantity = parseInt(input.value, 10);
+
+                if (newQuantity > 1) {
+                    newQuantity--;
+                    input.value = newQuantity;
+                    updateCartItem(productId, newQuantity);
+
+                    let newPrice = newQuantity * productPrice;
+                    updatePrice(newPrice, productId);
+                    getTotal()
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-plus').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const productId = this.getAttribute('data-product-id');
+                const productPrice = parseInt(this.getAttribute('data-product-price'));
+                const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                let newQuantity = parseInt(input.value, 10);
+
+                newQuantity++;
+                input.value = newQuantity;
+                updateCartItem(productId, newQuantity);
+
+                let newPrice = newQuantity * productPrice;
+                updatePrice(newPrice, productId);
+                getTotal();
+            });
+        });
+    });
+
+    function updatePrice(price, productId) {
+        var myElement = document.getElementById("total-price-" + productId);
+        myElement.innerHTML = price;
+    }
+    function getTotal() {
+        var myArray = [];
+        $('.sub-total').each(function (index, element) {
+            myArray.push(parseInt($(element).text()));
+        });
+        var sum = myArray.reduce(function (accumulator, currentValue) {
+            return accumulator + currentValue;
+        }, 0);
+        $('#mainTotal').text(sum);
+    }
+    getTotal();
+</script>
+@endpush

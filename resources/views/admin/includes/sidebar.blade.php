@@ -65,6 +65,13 @@
                 <div data-i18n="Dashboards">Dashboard</div>
             </a>
         </li>
+
+        <li class="menu-item">
+            <a href="{{route('allUsers')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-detail"></i>
+                <div data-i18n="Product">All Users</div>
+            </a>
+        </li>
        
 
         <!-- Forms -->
@@ -81,5 +88,13 @@
                 <div data-i18n="Product">All Product</div>
             </a>
         </li>
+
+        <li class="menu-item">
+            <a href="{{route('allOrder')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-detail"></i>
+                <div data-i18n="Product">All Orders</div>
+            </a>
+        </li>
+
     </ul>
 </aside>

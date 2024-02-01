@@ -14,6 +14,8 @@ class CartItem extends Model
         'rate',
         'quantity',
         'user_id',
+        'name',
+        'photo',
     ];
 
 

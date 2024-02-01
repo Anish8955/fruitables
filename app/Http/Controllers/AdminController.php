@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderedProduct;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -86,16 +89,49 @@ class AdminController extends Controller
         // Return view with the products data
         return view('admin.allproduct', ['products' => $products]);
     }
-    
-    public function deleteproduct($id)
-    {
-        $products = Product::findOrFail($id);
 
-        $products->delete();
+    public function allUsers()
+    {
+        
+        $users = User::all();
+
+        return view('admin.alluser', ['users' => $users]);
+    }
+
+    public function allOrder()
+    {
+        $orders = Order::with(['user' => function ($query) {
+            $query->withTrashed();
+        }, 'address'])->get();
+        
+        return view('admin.allorder', ['orders' => $orders]);
+    }
     
-        // Redirect back to user list or other appropriate page
-        return redirect()->route('allProduct');
+    
+    public function deleteuser($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->delete();
+    
+        return redirect()->route('allUsers');
     } 
+
+    public function deleteOrder($id)
+    {
+        $order = Order::findOrFail($id);
+
+        $order->delete();
+    
+        return redirect()->route('allOrder');
+    } 
+
+    public function orderDetails($id)
+    {  
+        $orderedProduct = OrderedProduct::where('order_id', $id)->get();
+        
+        return view('admin.orderdetails', ['orderedProduct' =>  $orderedProduct]);
+    }
 
 
 }

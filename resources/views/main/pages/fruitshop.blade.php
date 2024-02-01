@@ -48,15 +48,24 @@
                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                 <p class="text-dark fs-5 fw-bold mb-0">{{$product->price ??
                                                     '00'}}/{{$product->weight_type ?? 'Kg'}}</p>
-                                                <form action="{{ route('cart.add')}}" method="POST">
+                                                @if(Auth::check())
+                                                    <form action="{{ route('cart.add')}}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{$product->id}}">
                                                     <input type="hidden" name="price" value="{{$product->price}}">
+                                                    <input type="hidden" name="name" value="{{$product->name}}">
+                                                    <input type="hidden" name="photo" value="{{$product->photo}}">
                                                     <button type="submit"
                                                         class="btn border border-secondary rounded-pill px-3 text-primary">
                                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                                     </button>
                                                 </form>
+                                                @else
+                                                <a href="{{route('signup')}}"
+                                                        class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                                </a>
+                                                    @endif
                                             </div>
                                         </div>
                                     </div>
@@ -87,15 +96,24 @@
                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                 <p class="text-dark fs-5 fw-bold mb-0">{{$product->price ??
                                                     '00'}}/{{$product->weight_type ?? 'Kg'}}</p>
+                                                    @if(Auth::check())
                                                     <form action="{{ route('cart.add')}}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{$product->id}}">
                                                     <input type="hidden" name="price" value="{{$product->price}}">
+                                                    <input type="hidden" name="name" value="{{$product->name}}">
+                                                    <input type="hidden" name="photo" value="{{$product->photo}}">
                                                     <button type="submit"
                                                         class="btn border border-secondary rounded-pill px-3 text-primary">
                                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                                     </button>
                                                 </form>
+                                                @else
+                                                <a href="{{route('signup')}}"
+                                                        class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                                </a>
+                                                    @endif
                                             </div>
                                         </div>
                                     </div>
@@ -128,15 +146,24 @@
                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                 <p class="text-dark fs-5 fw-bold mb-0">{{$product->price ??
                                                     '00'}}/{{$product->weight_type ?? 'Kg'}}</p>
+                                                    @if(Auth::check())
                                                     <form action="{{ route('cart.add')}}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{$product->id}}">
                                                     <input type="hidden" name="price" value="{{$product->price}}">
+                                                    <input type="hidden" name="name" value="{{$product->name}}">
+                                                    <input type="hidden" name="photo" value="{{$product->photo}}">
                                                     <button type="submit"
                                                         class="btn border border-secondary rounded-pill px-3 text-primary">
                                                         <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                                     </button>
                                                 </form>
+                                                @else
+                                                <a href="{{route('signup')}}"
+                                                        class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                                </a>
+                                                    @endif
                                             </div>
                                         </div>
                                     </div>
@@ -151,4 +178,6 @@
         </div>
     </div>
 </div>
+
+
 <!-- Fruits Shop End-->
